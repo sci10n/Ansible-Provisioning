@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
-search sciion.me
-dommain sciion.me
+search {{ domain }}
+domain {{ domain }}
 
-nameserver 192.168.0.109
-nameserver 192.168.0.1
+nameserver {{ primary_dns }}
+nameserver {{ seconday_dns }}

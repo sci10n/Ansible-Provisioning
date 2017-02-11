@@ -1,3 +1,5 @@
 ---
 - name: restart postfix
   service: name=postfix state=restarted enabled=yes
+- name: start postgrey
+  service: name=postgrey state=started enabled=yes

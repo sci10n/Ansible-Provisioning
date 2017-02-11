@@ -1,3 +1,7 @@
 ---
 - name: restart sshd
   service: name=sshd state=restarted enabled=yes
+- name:  stop sshd
+  service: name=sshd state=stopped enabled=yes
+- name:  start sshd
+  service: name=sshd state=started enabled=yes  

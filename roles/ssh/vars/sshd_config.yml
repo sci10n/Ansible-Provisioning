@@ -1,0 +1,4 @@
+---
+  port: 22
+  allow_root: "no"
+  allow_password: "yes"

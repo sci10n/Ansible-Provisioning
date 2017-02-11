@@ -1,0 +1,30 @@
+---
+ - name: Set root password
+   user: 
+      name=root
+      password={{ root_password |password_hash('sha512') }} 
+ - name: Install sudo
+   apt: 
+     name=sudo
+     state=present
+ - name: Create managment user ansible
+   user:
+      name={{ item.name }}
+      comment="Manager"
+      password={{ manager_password |password_hash('sha512') }} 
+      update_password=always
+      groups=sudo
+      append=yes
+      generate_ssh_key=yes
+      ssh_key_bits=4096
+      ssh_key_file=.ssh/id_rsa
+      shell=/bin/bash
+      state=present
+   with_items: "{{ users }}"
+ - name: Add ansible to passwordless sudo
+   lineinfile:
+      dest: "/etc/sudoers"
+      regexp: "^ansible ALL="
+      line: "ansible ALL=(ALL) NOPASSWD: ALL"
+      state: "present"
+      validate: "visudo -cf %s"

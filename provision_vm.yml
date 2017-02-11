@@ -1,0 +1,26 @@
+---
+- name: Provision new host
+  hosts: virtual_machines
+  remote_user: root
+  become: yes
+  become_method: sudo
+  vars_prompt:
+      - name: "log_mail"
+        prompt: "Enter log mail"
+      - name: "public_ip"
+        prompt: "Enter public ip"
+      - name: "root_password"
+        prompt: "Enter root password"
+        private: yes
+        confirm: yes
+      - name: "manager_password"
+        prompt: "Enter password for manager accounts"
+        private: yes
+        confirm: yes
+  roles:
+    - setup_users
+    - ssh
+    - hostname
+    - resolvconf
+    - unattended
+    - fail2ban

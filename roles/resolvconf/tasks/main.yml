@@ -1,4 +1,6 @@
 ---
+ - name: Include varaibles
+   include_vars: main.yml
  - name: Download resolvconf package
    apt: name=resolvconf
  - name: Set nameservers and search domain

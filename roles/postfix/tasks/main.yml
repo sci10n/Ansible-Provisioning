@@ -1,10 +1,51 @@
 ---
  - name: Download postfix package
-   apt: name=postfix
- - name: Download mailutils
-   apt: name=mailutils
+   action: apt name={{item}} state=installed
+   with_items:
+       - "postfix"
+       - "postfix-policyd-spf-python"
+       - "postfix-policyd-spf-perl"
+       - "postgrey"
+       - "mailutils"
  - name: Set mailname
    template: src="mailname.j2" dest="/etc/mailname"
+ - name: Set main.cf
+   template: src="main.j2" dest="/etc/postfix/main.cf"
    notify: restart postfix
+ - name: Set master.cf
+   template: src="master.j2" dest="/etc/postfix/master.cf"
+   notify: restart postfix
+   notify: start postgrey
+ - name: Create ca dir
+   file:
+     path: /etc/postfix/tls
+     state: directory
+     mode: 0640
+ - name: Create root cert
+   command: openssl req -new -nodes -x509 -subj "/C=SE/ST=Ostergotaland/L=Linkoping/O=IT/CN=${"{{ hostname }}.{{ domain }}"}" -days 3650 -keyout /etc/postfix/tls/certificate.key -out /etc/postfix/tls/certificate.crt -extensions v3_ca creates=/etc/postifx/tls/certificate.crt
+ - name: Set permissions
+   file:
+     path: /etc/postfix/tls/certificate.key 
+     state: file
+     mode: 0640
+ - name: Set permissions
+   file:
+     path: /etc/postfix/tls/certificate.crt 
+     state: file
+     mode: 0640 
+ - name: create EDH param 512
+   command: openssl dhparam -out /etc/postfix/dh512.pem 512 creates=/etc/postfix/dh512.pem
+ - name: create EDH param 2048
+   command: openssl dhparam -out /etc/postfix/dh2048.pem 2048 creates=/etc/postfix/dh2048.pem
+ - name: Set permissions
+   file:
+     path: /etc/postfix/dh2048.pem
+     state: file
+     mode: 0644
+ - name: Set permissions
+   file:
+     path: /etc/postfix/dh512.pem
+     state: file
+     mode: 0644
  - name: Send mail to logs
-   mail: host='localhost' port='25' to="logs <logs@sciion.me>" subject='Ansible-report' body='System {{ ansible_hostname }} has been successfully provisioned.'
+   mail: host="sciion.me" to="logs <{{ log_mail }}>" subject='Ansible-report' body='System {{ ansible_hostname }} has been successfully provisioned.'

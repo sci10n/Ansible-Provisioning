@@ -1,0 +1,11 @@
+- name: Setup mailservers
+  hosts: mailservers
+  remote_user: root
+  become: yes
+  vars_prompt:
+      - name: "log_mail"
+        prompt: "Enter log mail"
+      - name: "public_ip"
+        prompt: "Enter public ip"
+  roles:
+    - postfix

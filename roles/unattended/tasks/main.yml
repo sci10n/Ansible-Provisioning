@@ -4,9 +4,10 @@
    with_items:
        - "unattended-upgrades"
        - "apt-listchanges"
- - name: Set sources in /etc/apt/apt.conf.d/50unattended-upgrades
-   lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp='(^\/\/)(\ *)(\"o=Debian,a=stable\";)' line='"o=Debian,a=stable";'
- - name: Set sources other in /etc/apt/apt.conf.d/50unattended-upgrades
-   lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp='(^\/\/)(\ *)(\"o=Debian,a=stable-updates\";)' line='"o=Debian,a=stable-updates";'
- - name: Set mail in /etc/apt/apt.conf.d/50unattended-upgrades
-   lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp='(^\/\/)(\ *)(Unattended-Upgrade::Mail)' line='Unattended-Upgrade::Mail "logs@sciion.me";'
+       - "needrestart"
+ - name: Set 50unattended
+   template: src="unattended.j2" dest="/etc/apt/apt.conf.d/50unattended-upgrades"
+   when: ansible_os_family == "Debian"
+ - name: Set 02periodic
+   template: src="periodic.j2" dest="/etc/apt/apt.conf.d/02periodic"
+   when: ansible_os_family == "Debian"
