@@ -48,4 +48,4 @@
      state: file
      mode: 0644
  - name: Send mail to logs
-   mail: host="sciion.me" to="logs <{{ log_mail }}>" subject='Ansible-report' body='System {{ ansible_hostname }} has been successfully provisioned.'
+   mail: host="{{ domain }}" to="logs <{{ log_mail }}>" subject='Ansible-report' body='System {{ ansible_hostname }} has been successfully provisioned.'
